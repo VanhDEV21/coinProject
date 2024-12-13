@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 const MONGO_URI = 'mongodb://127.0.0.1:27017/myCoindatabase';
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true , serverSelectionTimeoutMS: 30000 })
 .then(()=>console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error: '))
 
