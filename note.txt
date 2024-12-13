@@ -1,0 +1,4 @@
+//Get and take data from CoinMarketCap:
+GET http://localhost:3000/api/coins/fetch-and-save
+//Get list coin from database:
+GET http://localhost:3000/api/coins/list
