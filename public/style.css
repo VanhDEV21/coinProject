@@ -1,0 +1,97 @@
+/* Tạo hiệu ứng tổng thể cho bảng */
+#coinTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f4f4f9; /* Nền sáng nhẹ */
+    margin-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Định dạng cho các tiêu đề bảng */
+#coinTable th {
+    background-color: #007BFF; /* Xanh dương nhẹ cho tiêu đề */
+    color: #fff;  /* Màu chữ trắng */
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 16px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Định dạng cho các ô dữ liệu */
+#coinTable td {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+    color: #333;  /* Màu chữ tối */
+}
+
+/* Thêm màu nền cho hàng khi hover */
+#coinTable tr:hover {
+    background-color: #e0f7fa; /* Màu nền khi hover */
+}
+
+/* Thêm màu nền cho các giá trị thay đổi */
+#coinTable td:nth-child(2) {
+    color: #17a2b8; /* Màu giá trị coin */
+}
+
+#coinTable td:nth-child(3), 
+#coinTable td:nth-child(4), 
+#coinTable td:nth-child(5) {
+    font-weight: bold;
+}
+
+/* Màu cho thay đổi trong 5 phút, 1 giờ và 24 giờ */
+#coinTable td:nth-child(3) {
+    color: #ff7043; /* Màu cam cho thay đổi trong 5 phút */
+}
+
+#coinTable td:nth-child(4) {
+    color: #ffc107; /* Màu vàng cho thay đổi trong 1 giờ */
+}
+
+#coinTable td:nth-child(5) {
+    color: #28a745; /* Màu xanh lá cho thay đổi trong 24 giờ */
+}
+
+/* Thêm hiệu ứng mũi tên màu xanh và đỏ */
+.arrow-up {
+    color: #28a745; /* Màu xanh lá cho tăng */
+    font-size: 18px;
+}
+
+.arrow-down {
+    color: #dc3545; /* Màu đỏ cho giảm */
+    font-size: 18px;
+}
+
+.arrow-neutral {
+    color: #6c757d; /* Màu xám cho không thay đổi */
+    font-size: 18px;
+}
+
+/* Định dạng khi ô dữ liệu là 'N/A' */
+#coinTable td:empty {
+    color: #aaa; /* Màu xám cho ô rỗng */
+}
+
+/* Thêm hiệu ứng khi người dùng hover vào bất kỳ ô nào */
+#coinTable td:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* Responsive design - Điều chỉnh cho thiết bị di động */
+@media (max-width: 768px) {
+    #coinTable {
+        font-size: 12px;
+    }
+
+    #coinTable th, #coinTable td {
+        padding: 10px;
+    }
+}
