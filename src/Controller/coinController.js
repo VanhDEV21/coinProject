@@ -20,7 +20,7 @@ const fetchAndSaveCoinData = async () => {
             },
             params: {
                 start: 1,
-                limit: 10,
+                limit: 20,
                 convert: 'USD',
             },
         });
