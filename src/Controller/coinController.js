@@ -170,7 +170,7 @@ const getCoinDataAfterFetch = async (req, res) => {
 // };
 
 
-cron.schedule('0 * * * *', sendMessageToTelegram);
+// cron.schedule('0 * * * *', sendMessageToTelegram);
 
 // Cron job để fetch dữ liệu mỗi 5 phút
 cron.schedule('*/5 * * * *', fetchAndSaveCoinData);
