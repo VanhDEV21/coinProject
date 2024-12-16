@@ -149,29 +149,29 @@ const getCoinDataAfterFetch = async (req, res) => {
     }
 };
 
-const sendMessageToTelegram = async () => {
-    try {
-        const topCoins = await fetchTop10Coins();
+// const sendMessageToTelegram = async () => {
+//     try {
+//         const topCoins = await fetchTop10Coins();
 
-        if (topCoins && topCoins.length > 0) {
-            let message = "📊 *Top 10 Coins with Largest Price Change in the Last Hour* 📊\n\n";
+//         if (topCoins && topCoins.length > 0) {
+//             let message = "📊 *Top 10 Coins with Largest Price Change in the Last Hour* 📊\n\n";
 
-            topCoins.forEach((coin, index) => {
-                message += `${index + 1}. 📉 *${coin.nameCoin}* - Price: $${coin.currentPrice} USD - Change: ${coin.change_1h}%\n`;
-            });
+//             topCoins.forEach((coin, index) => {
+//                 message += `${index + 1}. 📉 *${coin.nameCoin}* - Price: $${coin.currentPrice} USD - Change: ${coin.change_1h}%\n`;
+//             });
 
-            // Gửi tin nhắn vào Telegram với định dạng Markdown
-            bot.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: "Markdown" });
-        } else {
-            bot.sendMessage(TELEGRAM_CHAT_ID, "No significant price changes in the last hour.");
-        }
-    } catch (error) {
-        console.error('Error sending message to Telegram:', error.message);
-    }
-};
+//             // Gửi tin nhắn vào Telegram với định dạng Markdown
+//             bot.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: "Markdown" });
+//         } else {
+//             bot.sendMessage(TELEGRAM_CHAT_ID, "No significant price changes in the last hour.");
+//         }
+//     } catch (error) {
+//         console.error('Error sending message to Telegram:', error.message);
+//     }
+// };
 
 
-cron.schedule('0 * * * *', sendMessageToTelegram);
+// cron.schedule('0 * * * *', sendMessageToTelegram);
 // Run fetchAndSaveCoinData immediately on program start
 fetchAndSaveCoinData();
 // Schedule fetchAndSaveCoinData every 5 minutes
