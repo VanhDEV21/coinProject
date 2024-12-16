@@ -14,7 +14,13 @@ function fetchCoinData() {
             // Duyệt qua từng coin và thêm vào bảng
             data.forEach(coin => {
                 const row = coinTable.insertRow();
-
+                // Thêm logo vào bảng
+                const logoCell = row.insertCell(0);
+                const logoImg = document.createElement('img');
+                logoImg.src = coin.image;  // Lấy URL logo từ API
+                logoImg.alt = coin.name;
+                logoImg.style.width = '30px'; // Đặt kích thước logo
+                logoCell.appendChild(logoImg);
                 // Thêm các cột vào bảng
                 row.insertCell(0).innerText = coin.nameCoin;
                 row.insertCell(1).innerText = coin.currentPrice; // Giá của coin

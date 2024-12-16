@@ -14,6 +14,12 @@
 #coinTable:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Tăng độ bóng khi hover vào bảng */
 }
+/* Định dạng cho cột logo */
+#coinTable td img {
+    width: 30px;
+    height: auto;
+    border-radius: 50%;  /* Làm tròn logo */
+}
 
 /* Định dạng cho các tiêu đề bảng */
 #coinTable th {
@@ -34,6 +40,10 @@
     border-bottom: 1px solid #ddd;
     color: #333;  /* Màu chữ tối */
     transition: background-color 0.3s; /* Thêm hiệu ứng mượt khi hover vào ô */
+}
+/* Màu cho giá trị đồng coin */
+#coinTable td:nth-child(2) {
+    color: #17a2b8; /* Màu giá trị coin */
 }
 
 /* Thêm màu nền cho hàng khi hover */
