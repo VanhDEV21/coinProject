@@ -23,6 +23,7 @@
     "caseless": "^0.12.0",
     "combined-stream": "^1.0.8",
     "core-util-is": "^1.0.3",
+    "cors": "^2.8.5",
     "dashdash": "^1.14.1",
     "data-view-buffer": "^1.0.1",
     "data-view-byte-length": "^1.0.1",

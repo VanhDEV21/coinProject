@@ -5,7 +5,7 @@ window.onload = function() {
 
 // Hàm lấy dữ liệu từ API và hiển thị trên bảng
 function fetchCoinData() {
-    fetch('http://localhost:3000/api/coins/list') // Đảm bảo URL đúng
+    fetch('https://coinproject-2.onrender.com/api/coins/list') // Đảm bảo URL đúng
         .then(response => response.json())
         .then(data => {
             const coinTable = document.getElementById('coinTable').getElementsByTagName('tbody')[0];
