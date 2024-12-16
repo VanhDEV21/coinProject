@@ -27,7 +27,7 @@ const CoinSchema = new mongoose.Schema({
             }
         },
     },
-    calledAt: { type: Date, default: Date.now },
+    calledAt: { type: Date, default: () => new Date().toISOString() },
     history: {
         type: [
             {

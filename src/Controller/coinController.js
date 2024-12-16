@@ -38,24 +38,23 @@ const fetchAndSaveCoinData = async () => {
                     ? parseFloat(coin.quote.USD.volume_24h.toFixed(2))
                     : 0;
 
-                const existingCoin = await Coin.findOne({ nameCoin: coin.name });
+                const existingCoin = await Coin.findOne({ nameCoin: coin.name },'nameCoin currentPrice change_5min change_1h change_24h history');
 
                 if (existingCoin) {
+                   // Kiểm tra và khởi tạo nếu không có history
+                    if (!existingCoin.history) {
+                        existingCoin.history = [];
+                    }
+
                     // Lấy giá lịch sử
-                    const price5minAgo = existingCoin.history?.find((entry) => entry.timestamp >= fiveMinutesAgo)?.price;
-                    const price1hAgo = existingCoin.history?.find((entry) => entry.timestamp >= oneHourAgo)?.price;
-                    const price24hAgo = existingCoin.history?.find((entry) => entry.timestamp >= oneDayAgo)?.price;
+                    const price5minAgo = existingCoin.history.find((entry) => entry.timestamp >= fiveMinutesAgo)?.price;
+                    const price1hAgo = existingCoin.history.find((entry) => entry.timestamp >= oneHourAgo)?.price;
+                    const price24hAgo = existingCoin.history.find((entry) => entry.timestamp >= oneDayAgo)?.price;
 
                     // Tính thay đổi giá
-                    const change_5min = price5minAgo
-                        ? (((currentPrice - price5minAgo) / price5minAgo) * 100).toFixed(2)
-                        : null;
-                    const change_1h = price1hAgo
-                        ? (((currentPrice - price1hAgo) / price1hAgo) * 100).toFixed(2)
-                        : null;
-                    const change_24h = price24hAgo
-                        ? (((currentPrice - price24hAgo) / price24hAgo) * 100).toFixed(2)
-                        : null;
+                    const change_5min = price5minAgo ? (((currentPrice - price5minAgo) / price5minAgo) * 100).toFixed(2) : null;
+                    const change_1h = price1hAgo ? (((currentPrice - price1hAgo) / price1hAgo) * 100).toFixed(2) : null;
+                    const change_24h = price24hAgo ? (((currentPrice - price24hAgo) / price24hAgo) * 100).toFixed(2) : null;
 
                     // Cập nhật lịch sử giá
                     existingCoin.history.push({ price: currentPrice, timestamp: now });
@@ -172,10 +171,12 @@ const getCoinDataAfterFetch = async (req, res) => {
 
 
 // cron.schedule('0 * * * *', sendMessageToTelegram);
-// Run fetchAndSaveCoinData immediately on program start
+
+// Cron job để fetch dữ liệu mỗi 5 phút
+cron.schedule('*/5 * * * *', fetchAndSaveCoinData);
+
+// Chạy hàm ngay khi khởi động chương trình
 fetchAndSaveCoinData();
-// Schedule fetchAndSaveCoinData every 5 minutes
-setInterval(fetchAndSaveCoinData, 300000); // 5 phút = 300000 ms
 
 module.exports = {
     fetchAndSaveCoinData,
