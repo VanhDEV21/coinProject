@@ -121,7 +121,7 @@ const fetchTop10Coins = async () => {
 const getAllCoin = async () => {
     try {
         const coinData = await Coin.find(); // Lấy danh sách coin từ DB
-        console.log('Coin data:', coinData); // Kiểm tra giá trị coinData
+        // console.log('Coin data:', coinData); // Kiểm tra giá trị coinData
 
         if (!coinData || coinData.length === 0) {
             throw new Error('No coins found in the database');
