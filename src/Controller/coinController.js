@@ -6,11 +6,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const API_KEY = '73feb218-7d95-459b-a40b-5f726d5c9c01';
 const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 
-const TELEGRAM_API_TOKEN = '7874188970:AAFowIaDYQTvsTO2ZqQN0ONHDby_PayT_zs';  // Thay bằng token bot của bạn
-const TELEGRAM_CHAT_ID = '-4737590717';  // Thay bằng chat ID của nhóm Telegram
+// const TELEGRAM_API_TOKEN = '7874188970:AAFowIaDYQTvsTO2ZqQN0ONHDby_PayT_zs';  // Thay bằng token bot của bạn
+// const TELEGRAM_CHAT_ID = '-4737590717';  // Thay bằng chat ID của nhóm Telegram
 
 
-const bot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
+// const bot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 // Function fetch data from CoinMarketCap and save to database
 const fetchAndSaveCoinData = async () => {
     try {
@@ -148,26 +148,26 @@ const getCoinDataAfterFetch = async (req, res) => {
     }
 };
 
-const sendMessageToTelegram = async () => {
-    try {
-        const topCoins = await fetchTop10Coins();
+// const sendMessageToTelegram = async () => {
+//     try {
+//         const topCoins = await fetchTop10Coins();
 
-        if (topCoins && topCoins.length > 0) {
-            let message = "📊 *Top 10 Coins with Largest Price Change in the Last Hour* 📊\n\n";
+//         if (topCoins && topCoins.length > 0) {
+//             let message = "📊 *Top 10 Coins with Largest Price Change in the Last Hour* 📊\n\n";
 
-            topCoins.forEach((coin, index) => {
-                message += `${index + 1}. 📉 *${coin.nameCoin}* - Price: $${coin.currentPrice} USD - Change: ${coin.change_1h}%\n`;
-            });
+//             topCoins.forEach((coin, index) => {
+//                 message += `${index + 1}. 📉 *${coin.nameCoin}* - Price: $${coin.currentPrice} USD - Change: ${coin.change_1h}%\n`;
+//             });
 
-            // Gửi tin nhắn vào Telegram với định dạng Markdown
-            bot.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: "Markdown" });
-        } else {
-            bot.sendMessage(TELEGRAM_CHAT_ID, "No significant price changes in the last hour.");
-        }
-    } catch (error) {
-        console.error('Error sending message to Telegram:', error.message);
-    }
-};
+//             // Gửi tin nhắn vào Telegram với định dạng Markdown
+//             bot.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: "Markdown" });
+//         } else {
+//             bot.sendMessage(TELEGRAM_CHAT_ID, "No significant price changes in the last hour.");
+//         }
+//     } catch (error) {
+//         console.error('Error sending message to Telegram:', error.message);
+//     }
+// };
 
 
 cron.schedule('0 * * * *', sendMessageToTelegram);
