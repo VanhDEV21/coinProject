@@ -15,18 +15,9 @@ const CoinSchema = new mongoose.Schema({
             }
         },
     },
-    change_5min: {
-        type: Number,
-        default: null, // Giá trị mặc định
-    },
-    change_1h: {
-        type: Number,
-        default: null, // Giá trị mặc định
-    },
-    change_24h: {
-        type: Number,
-        default: null, // Giá trị mặc định
-    },
+    change_5min: { type: Number, default: null },
+    change_1h: { type: Number, default: null },
+    change_24h: { type: Number, default: null },
     Volume_24h: {
         type: Number,
         required: true,
@@ -36,16 +27,16 @@ const CoinSchema = new mongoose.Schema({
             }
         },
     },
-    calledAt: {
-        type: Date,
-        default: Date.now,
+    calledAt: { type: Date, default: Date.now },
+    history: {
+        type: [
+            {
+                price: Number,
+                timestamp: Date,
+            },
+        ],
+        default: [], // Đảm bảo khởi tạo mảng rỗng nếu không có dữ liệu
     },
-    history: [
-        {
-            price: Number,
-            timestamp: Date,
-        },
-    ], // Lưu trữ lịch sử giá theo timestamp
 });
 
 module.exports = mongoose.model('Coin', CoinSchema);

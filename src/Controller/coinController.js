@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Coin = require('../models/coins');
 const cron = require('node-cron');
+const CoinHistory = require('../models/coinHistory');
 const TelegramBot = require('node-telegram-bot-api');
 const API_KEY = '73feb218-7d95-459b-a40b-5f726d5c9c01';
 const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
@@ -25,105 +26,75 @@ const fetchAndSaveCoinData = async () => {
         });
 
         const data = response.data.data;
+        const now = new Date();
+        const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+        const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
         for (const coin of data) {
-            // Giữ giá với tối đa 8 chữ số sau dấu phẩy
-            const currentPrice = parseFloat(coin.quote.USD.price.toFixed(8)); 
-            const volume24h = coin.quote.USD.volume_24h
-                ? parseFloat(coin.quote.USD.volume_24h.toFixed(2))
-                : 0;
+            try {
+                const currentPrice = parseFloat(coin.quote.USD.price.toFixed(8));
+                const volume24h = coin.quote.USD.volume_24h
+                    ? parseFloat(coin.quote.USD.volume_24h.toFixed(2))
+                    : 0;
 
-            const now = new Date();
-            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-            const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+                const existingCoin = await Coin.findOne({ nameCoin: coin.name });
 
-            const existingCoin = await Coin.findOne({ nameCoin: coin.name });
+                if (existingCoin) {
+                    // Lấy giá lịch sử
+                    const price5minAgo = existingCoin.history?.find((entry) => entry.timestamp >= fiveMinutesAgo)?.price;
+                    const price1hAgo = existingCoin.history?.find((entry) => entry.timestamp >= oneHourAgo)?.price;
+                    const price24hAgo = existingCoin.history?.find((entry) => entry.timestamp >= oneDayAgo)?.price;
 
-            let change_5min = null;
-            let change_1h = null;
-            let change_24h = null;
+                    // Tính thay đổi giá
+                    const change_5min = price5minAgo
+                        ? (((currentPrice - price5minAgo) / price5minAgo) * 100).toFixed(2)
+                        : null;
+                    const change_1h = price1hAgo
+                        ? (((currentPrice - price1hAgo) / price1hAgo) * 100).toFixed(2)
+                        : null;
+                    const change_24h = price24hAgo
+                        ? (((currentPrice - price24hAgo) / price24hAgo) * 100).toFixed(2)
+                        : null;
 
-            // Lấy phần thập phân của giá coin
-            const decimalPart = currentPrice.toString().split('.')[1] || '0';  // Lấy phần thập phân hoặc mặc định '0'
+                    // Cập nhật lịch sử giá
+                    existingCoin.history.push({ price: currentPrice, timestamp: now });
+                    existingCoin.history = existingCoin.history.filter(
+                        (entry) => entry.timestamp >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+                    );
 
-            console.log(`Decimal part of ${coin.name}:`, decimalPart);  // In ra phần thập phân của coin
+                    // Cập nhật thông tin coin
+                    existingCoin.currentPrice = currentPrice;
+                    existingCoin.change_5min = change_5min;
+                    existingCoin.change_1h = change_1h;
+                    existingCoin.change_24h = change_24h;
+                    existingCoin.Volume_24h = volume24h;
+                    existingCoin.calledAt = now;
 
-            if (existingCoin) {
-                // Lấy giá lịch sử tại các mốc thời gian
-                const price5minAgo = existingCoin.history.find(
-                    (entry) => entry.timestamp >= fiveMinutesAgo
-                )?.price;
-            
-                const price1hAgo = existingCoin.history.find(
-                    (entry) => entry.timestamp >= oneHourAgo
-                )?.price;
-            
-                const price24hAgo = existingCoin.history.find(
-                    (entry) => entry.timestamp >= oneDayAgo
-                )?.price;
-            
-                // Tính toán phần trăm thay đổi trong 5 phút
-                if (price5minAgo) {
-                    change_5min = (((currentPrice - price5minAgo) / price5minAgo) * 100).toFixed(2);
-                }
-                
-                // Kiểm tra nếu có giá trị lịch sử 1h
-                if (price1hAgo) {
-                    change_1h = (((currentPrice - price1hAgo) / price1hAgo) * 100).toFixed(2);
+                    await existingCoin.save();
                 } else {
-                    // Nếu không đủ 1 giờ dữ liệu, set change_1h = 0
-                    change_1h = 0;
+                    // Tạo coin mới
+                    const newCoin = new Coin({
+                        nameCoin: coin.name,
+                        currentPrice,
+                        change_5min: null,
+                        change_1h: null,
+                        change_24h: null,
+                        Volume_24h: volume24h,
+                        calledAt: now,
+                        history: [{ price: currentPrice, timestamp: now }],
+                    });
+
+                    await newCoin.save();
                 }
-                
-                // Kiểm tra nếu có giá trị lịch sử 24h
-                if (price24hAgo) {
-                    change_24h = (((currentPrice - price24hAgo) / price24hAgo) * 100).toFixed(2);
-                } else {
-                    // Nếu không đủ 24 giờ dữ liệu, set change_24h = 0
-                    change_24h = 0;
-                }
-            
-                // Lưu giá trị lịch sử hiện tại
-                existingCoin.history.push({ price: currentPrice, timestamp: now });
-            
-                // Chỉ lưu lịch sử tối đa 1 ngày
-                existingCoin.history = existingCoin.history.filter(
-                    (entry) => entry.timestamp >= oneDayAgo
-                );
-            
-                // Cập nhật các trường
-                existingCoin.currentPrice = currentPrice;
-                existingCoin.change_5min = change_5min || existingCoin.change_5min;
-                existingCoin.change_1h = change_1h || existingCoin.change_1h;
-                existingCoin.change_24h = change_24h || existingCoin.change_24h;
-                existingCoin.Volume_24h = volume24h;
-                existingCoin.calledAt = now;
-                existingCoin.decimalPart = decimalPart;  // Lưu phần thập phân vào database
-            
-                await existingCoin.save();
-            } else {
-                // Nếu không tồn tại coin trong database, tạo mới
-                const newCoin = new Coin({
-                    nameCoin: coin.name,
-                    currentPrice,
-                    change_5min: null, // Không có lịch sử để tính
-                    change_1h: null, // Không có lịch sử để tính
-                    change_24h: null, // Không có lịch sử để tính
-                    Volume_24h: volume24h,
-                    calledAt: now,
-                    history: [{ price: currentPrice, timestamp: now }],
-                    decimalPart: decimalPart, // Lưu phần thập phân vào database
-                });
-                await newCoin.save();
+            } catch (coinError) {
+                console.error(`Error processing coin ${coin.name}:`, coinError.message);
             }
         }
 
         console.log('Data saved successfully!');
     } catch (error) {
-        console.error('Detailed error:', error);
-
-        console.error('Error fetching data for top coins:', error.message);
+        console.error('Error fetching data:', error.message);
     }
 };
 const fetchTop10Coins = async () => {
@@ -146,27 +117,6 @@ const fetchTop10Coins = async () => {
     }
 };
 
-// Function to send top 10 coins to Telegram
-const sendMessageToTelegram = async () => {
-    try {
-        const topCoins = await fetchTop10Coins();
-
-        if (topCoins && topCoins.length > 0) {
-            let message = "📊 **Top 10 Coins with Largest Price Change in the Last Hour** 📊\n\n";
-
-            topCoins.forEach((coin, index) => {
-                message += `${index + 1}. 📉 ${coin.nameCoin} - Price: $${coin.currentPrice} USD - Change: ${coin.change_1h}%\n`;
-            });
-
-            // Gửi tin nhắn vào nhóm Telegram
-            bot.sendMessage(TELEGRAM_CHAT_ID, message);
-        } else {
-            bot.sendMessage(TELEGRAM_CHAT_ID, "No significant price changes in the last hour.");
-        }
-    } catch (error) {
-        console.error('Error sending message to Telegram:', error);
-    }
-};
 
 // Function to get all coins from database
 const getAllCoin = async () => {
@@ -196,6 +146,27 @@ const getCoinDataAfterFetch = async (req, res) => {
         res.status(200).json({ message: 'Data saved and fetched successfully!', data: data });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching and saving data', error: error.message });
+    }
+};
+
+const sendMessageToTelegram = async () => {
+    try {
+        const topCoins = await fetchTop10Coins();
+
+        if (topCoins && topCoins.length > 0) {
+            let message = "📊 *Top 10 Coins with Largest Price Change in the Last Hour* 📊\n\n";
+
+            topCoins.forEach((coin, index) => {
+                message += `${index + 1}. 📉 *${coin.nameCoin}* - Price: $${coin.currentPrice} USD - Change: ${coin.change_1h}%\n`;
+            });
+
+            // Gửi tin nhắn vào Telegram với định dạng Markdown
+            bot.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: "Markdown" });
+        } else {
+            bot.sendMessage(TELEGRAM_CHAT_ID, "No significant price changes in the last hour.");
+        }
+    } catch (error) {
+        console.error('Error sending message to Telegram:', error.message);
     }
 };
 
