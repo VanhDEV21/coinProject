@@ -6,11 +6,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const API_KEY = '73feb218-7d95-459b-a40b-5f726d5c9c01';
 const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 
-const TELEGRAM_API_TOKEN = '7874188970:AAFowIaDYQTvsTO2ZqQN0ONHDby_PayT_zs';  // Thay bằng token bot của bạn
-const TELEGRAM_CHAT_ID = '6486451651';  // Thay bằng chat ID của nhóm Telegram
+// const TELEGRAM_API_TOKEN = '7874188970:AAFowIaDYQTvsTO2ZqQN0ONHDby_PayT_zs';  // Thay bằng token bot của bạn
+// const TELEGRAM_CHAT_ID = '6486451651';  // Thay bằng chat ID của nhóm Telegram
 
 
-const bot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
+// const bot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 // Function fetch data from CoinMarketCap and save to database
 const fetchAndSaveCoinData = async () => {
     try {
