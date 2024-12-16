@@ -7,6 +7,12 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    transition: box-shadow 0.3s ease; /* Hiệu ứng khi bảng có thay đổi */
+}
+
+/* Hiệu ứng khi hover vào bảng */
+#coinTable:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Tăng độ bóng khi hover vào bảng */
 }
 
 /* Định dạng cho các tiêu đề bảng */
@@ -27,6 +33,7 @@
     font-size: 14px;
     border-bottom: 1px solid #ddd;
     color: #333;  /* Màu chữ tối */
+    transition: background-color 0.3s; /* Thêm hiệu ứng mượt khi hover vào ô */
 }
 
 /* Thêm màu nền cho hàng khi hover */
@@ -92,6 +99,19 @@
     }
 
     #coinTable th, #coinTable td {
+        padding: 10px;
+    }
+
+    /* Giảm bớt chiều rộng và tăng font size cho tiêu đề */
+    #coinTable th {
+        font-size: 14px;
+    }
+
+    /* Cải thiện cách trình bày các cột */
+    #coinTable td:nth-child(3),
+    #coinTable td:nth-child(4),
+    #coinTable td:nth-child(5) {
+        font-size: 12px;
         padding: 10px;
     }
 }
