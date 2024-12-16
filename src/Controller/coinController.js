@@ -38,7 +38,7 @@ const fetchAndSaveCoinData = async () => {
                     ? parseFloat(coin.quote.USD.volume_24h.toFixed(2))
                     : 0;
 
-                const existingCoin = await Coin.find({ nameCoin: coin.name },'nameCoin currentPrice change_5min change_1h change_24h history');
+                const existingCoin = await Coin.findOne({ nameCoin: coin.name },'nameCoin currentPrice change_5min change_1h change_24h history');
 
                 if (existingCoin) {
                    // Kiểm tra và khởi tạo nếu không có history

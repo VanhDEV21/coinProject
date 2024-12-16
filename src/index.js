@@ -8,11 +8,20 @@ const MONGO_URI = 'mongodb+srv://vanhspmax:kwtipzJDhhHjWbFb@productioncluster.23
 mongoose.connect(MONGO_URI, { useNewUrlParser: true,
      useUnifiedTopology: true , 
      connectTimeoutMS: 60000, 
-     socketTimeoutMS: 60000,
      serverSelectionTimeoutMS: 60000,
      autoIndex: false,})
 .then(()=>console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error: '))
+
+const axios = require('axios');
+
+axios.get('https://api.ipify.org?format=json')
+  .then(response => {
+    console.log("Render's public IP:", response.data.ip);
+  })
+  .catch(error => {
+    console.error("Error getting IP:", error);
+  });
 
 
 // Middleware
