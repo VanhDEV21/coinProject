@@ -15,6 +15,7 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true,
 .catch(err => console.log('MongoDB connection error: '))
 
 const axios = require('axios');
+const TelegramBot = require('node-telegram-bot-api');
 
 axios.get('https://api.ipify.org?format=json')
   .then(response => {
@@ -24,6 +25,24 @@ axios.get('https://api.ipify.org?format=json')
     console.error("Error getting IP:", error);
   });
 
+// Thay bằng token bot của bạn
+const TOKEN = '7874188970:AAFowIaDYQTvsTO2ZqQN0ONHDby_PayT_zs';
+const bot = new TelegramBot(TOKEN);
+
+// Kích hoạt webhook cho Telegram bot
+bot.setWebHook(`https://your-app-name.onrender.com/webhook`);
+
+// Middleware để nhận dữ liệu từ Telegram
+app.use(express.json());
+app.post('/webhook', (req, res) => {
+    bot.processUpdate(req.body); // Xử lý dữ liệu từ Telegram
+    res.sendStatus(200);
+});
+
+// Endpoint kiểm tra bot
+app.get('/', (req, res) => {
+    res.send('Bot is running!');
+});
 
 // Middleware
 app.use(express.json());
