@@ -40,7 +40,7 @@ app.post('/webhook', (req, res) => {
 });
 
 // Endpoint kiểm tra bot
-app.get('/', (req, res) => {
+app.get('/bot', (req, res) => {
     res.send('Bot is running!');
 });
 
