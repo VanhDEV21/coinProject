@@ -50,9 +50,9 @@ const fetchAndSaveCoinData = async () => {
                     const price24hAgo = existingCoin.history.find((entry) => entry.timestamp >= oneDayAgo)?.price;
 
                     // Tính thay đổi giá
-                    const change_5min = price5minAgo ? (((currentPrice - price5minAgo) / price5minAgo) * 100).toFixed(2) : null;
-                    const change_1h = price1hAgo ? (((currentPrice - price1hAgo) / price1hAgo) * 100).toFixed(2) : null;
-                    const change_24h = price24hAgo ? (((currentPrice - price24hAgo) / price24hAgo) * 100).toFixed(2) : null;
+                    const change_5min = price5minAgo ? (((currentPrice - price5minAgo) / price5minAgo) * 100).toFixed(2) : "0.00";
+                    const change_1h = price1hAgo ? (((currentPrice - price1hAgo) / price1hAgo) * 100).toFixed(2) : "0.00";
+                    const change_24h = price24hAgo ? (((currentPrice - price24hAgo) / price24hAgo) * 100).toFixed(2) : "0.00";
 
                     // Cập nhật lịch sử giá
                     existingCoin.history.push({ price: currentPrice, timestamp: now });
