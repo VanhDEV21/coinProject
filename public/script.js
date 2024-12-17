@@ -28,15 +28,18 @@ function fetchCoinData() {
 
 // Hàm lấy biểu tượng mũi tên và định dạng sự thay đổi
 function getChangeIcon(change) {
-    if (change === null || change === undefined) {
-        return '<span class="arrow-neutral">↔</span>'; // Biểu tượng mũi tên ngang cho dữ liệu không thay đổi
+    // Đảm bảo luôn hiển thị '0.00%' khi không có thay đổi hoặc không có dữ liệu
+    if (change === null || change === undefined || isNaN(change)) {
+        change = "0.00";
     }
 
-    if (change > 0) {
-        return `<span class="arrow-up">↑</span> ${change}%`; // Mũi tên lên cho sự thay đổi tích cực
-    } else if (change < 0) {
-        return `<span class="arrow-down">↓</span> ${change}%`; // Mũi tên xuống cho sự thay đổi tiêu cực
+    // Kiểm tra giá trị change và thêm biểu tượng phù hợp
+    if (parseFloat(change) > 0) {
+        return `<span class="arrow-up">↑</span> ${change}%`; // Mũi tên lên cho thay đổi dương
+    } else if (parseFloat(change) < 0) {
+        return `<span class="arrow-down">↓</span> ${change}%`; // Mũi tên xuống cho thay đổi âm
     } else {
-        return '<span class="arrow-neutral">↔</span>'; // Biểu tượng mũi tên ngang cho sự thay đổi bằng 0
+        return `<span class="arrow-neutral">↔</span> ${change}%`; // Mũi tên ngang cho thay đổi bằng 0
     }
 }
+
