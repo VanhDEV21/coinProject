@@ -28,18 +28,29 @@ function fetchCoinData() {
 
 // Hàm lấy biểu tượng mũi tên và định dạng sự thay đổi
 function getChangeIcon(change) {
-    // Đảm bảo luôn hiển thị '0.00%' khi không có thay đổi hoặc không có dữ liệu
+    let colorClass = ''; // Class màu sắc mặc định
+    let displayValue = '';
+
+    // Đảm bảo luôn hiển thị '0.00%' khi dữ liệu không hợp lệ
     if (change === null || change === undefined || isNaN(change)) {
         change = "0.00";
     }
 
-    // Kiểm tra giá trị change và thêm biểu tượng phù hợp
-    if (parseFloat(change) > 0) {
-        return `<span class="arrow-up">↑</span> ${change}%`; // Mũi tên lên cho thay đổi dương
-    } else if (parseFloat(change) < 0) {
-        return `<span class="arrow-down">↓</span> ${change}%`; // Mũi tên xuống cho thay đổi âm
+    const numericChange = parseFloat(change);
+
+    // Xác định class màu dựa trên giá trị change
+    if (numericChange > 0) {
+        colorClass = 'change-up'; // Class cho tăng giá (màu xanh)
+        displayValue = `<span class="${colorClass}">↑ ${numericChange}%</span>`;
+    } else if (numericChange < 0) {
+        colorClass = 'change-down'; // Class cho giảm giá (màu đỏ)
+        displayValue = `<span class="${colorClass}">↓ ${numericChange}%</span>`;
     } else {
-        return `<span class="arrow-neutral">↔</span> ${change}%`; // Mũi tên ngang cho thay đổi bằng 0
+        colorClass = 'change-neutral'; // Class cho không đổi (màu vàng)
+        displayValue = `<span class="${colorClass}">↔ ${numericChange}%</span>`;
     }
+
+    return displayValue;
 }
+
 

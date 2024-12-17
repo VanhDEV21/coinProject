@@ -125,3 +125,21 @@
         padding: 10px;
     }
 }
+/* Tăng giá - màu xanh */
+.change-up {
+    color: green;
+    font-weight: bold;
+}
+
+/* Giảm giá - màu đỏ */
+.change-down {
+    color: red;
+    font-weight: bold;
+}
+
+/* Không đổi - màu vàng */
+.change-neutral {
+    color: goldenrod;
+    font-weight: bold;
+}
+
